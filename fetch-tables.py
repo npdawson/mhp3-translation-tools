@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import gspread
 from pathlib import Path
 from collections import defaultdict
