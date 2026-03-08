@@ -1,0 +1,50 @@
+import gspread
+from pathlib import Path
+from collections import defaultdict
+
+gc = gspread.oauth()
+sh = gc.open("MHP3rd Translation Project")
+
+# psp = sh.get_worksheet(0).get_all_records(numericise_ignore=[1, 4, 6, 7, 8])
+ps3 = sh.get_worksheet(1).get_all_records(numericise_ignore=[1, 4, 5, 6])
+# file_ref = sh.get_worksheet(2).get_all_records()
+
+
+def records_to_files(records):
+    files = defaultdict(list)
+    sorted_records = sorted(records,
+                            key=lambda x: (x['bin'], x['file'], x['line']))
+    for row in sorted_records:
+        path = Path('ps3') / row['bin'] / f"string_table_{row['file']}.txt"
+        line = row['EN']
+        if line == '':
+            line = row['rough translation']
+        files[path].append(line)
+    return dict(files)
+
+
+def patch_files(filedict, dir='./'):
+    path = Path(dir)
+    for filepath, new_lines in filedict.items():
+        # sanity checks before we make any changes
+        fullpath = path / filepath
+        assert fullpath.is_file(), f"File not found: {fullpath}"
+        with open(fullpath, 'r') as file:
+            file_lines = file.readlines()
+            assert len(file_lines) == len(new_lines), f"Number of lines doesn't match: {fullpath}"
+
+    for filepath, new_lines in filedict.items():
+        fullpath = path / filepath
+        with open(fullpath, 'r') as file:
+            file_lines = file.readlines()
+        for line_num, new_line in enumerate(new_lines):
+            if new_line.strip() != '':
+                new_line = new_line.replace('\n', ' ')
+                file_lines[line_num] = new_line.rstrip() + '\n'
+        with open(fullpath, 'w') as file:
+            file.writelines(file_lines)
+
+
+if __name__ == "__main__":
+    ps3_files = records_to_files(ps3)
+    patch_files(ps3_files)
