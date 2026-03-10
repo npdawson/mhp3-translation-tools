@@ -1,2 +1,5 @@
 # mhp3-translation-tools
-scripts for translationg Monster Hunter Portable 3rd
+scripts for translating Monster Hunter Portable 3rd
+
+requires MHTools:
+https://github.com/codestation/mhtools/
