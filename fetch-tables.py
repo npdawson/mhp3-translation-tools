@@ -7,9 +7,16 @@ from collections import defaultdict
 gc = gspread.oauth()
 sh = gc.open("MHP3rd Translation Project")
 
-# psp = sh.get_worksheet(0).get_all_records(numericise_ignore=[1, 4, 6, 7, 8])
-ps3 = sh.get_worksheet(1).get_all_records(numericise_ignore=[1, 4, 5, 6])
-# file_ref = sh.get_worksheet(2).get_all_records()
+PSP_WORKSHEET_ID = 1874244777
+PS3_WORKSHEET_ID = 1307758665
+FILE_REF_ID = 1858240434
+
+# psp_worksheet = sh.get_worksheet_by_id(PSP_WORKSHEET)
+ps3_worksheet = sh.get_worksheet_by_id(PS3_WORKSHEET_ID)
+# file_ref = sh.get_worksheet_by_id(FILE_REF_ID).get_all_records()
+
+# psp_records = psp_worksheet.get_all_records(numericise_ignore=[1, 4, 7, 8])
+ps3_records = ps3_worksheet.get_all_records(numericise_ignore=[1, 4, 5, 6])
 
 
 def records_to_files(records):
@@ -48,5 +55,5 @@ def patch_files(filedict, dir='./'):
 
 
 if __name__ == "__main__":
-    ps3_files = records_to_files(ps3)
+    ps3_files = records_to_files(ps3_records)
     patch_files(ps3_files)
