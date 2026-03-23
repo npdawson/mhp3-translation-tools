@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import gspread
 from pathlib import Path
@@ -40,7 +40,8 @@ def patch_files(filedict, dir='./'):
         assert fullpath.is_file(), f"File not found: {fullpath}"
         with open(fullpath, 'r') as file:
             file_lines = file.readlines()
-            assert len(file_lines) == len(new_lines), f"Number of lines doesn't match: {fullpath}"
+            assert len(file_lines) == len(new_lines), \
+                f"Number of lines doesn't match: {fullpath}"
 
     for filepath, new_lines in filedict.items():
         fullpath = path / filepath
